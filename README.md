@@ -85,13 +85,13 @@ make yes-molecule
 Build the serial executable:
 
 ```bash
-make serial -j2
+make serial -j8
 ```
 
 Optionally, also build the MPI executable:
 
 ```bash
-make mpi -j2
+make mpi -j8
 ```
 
 ## Running a simulation
