@@ -1,5 +1,3 @@
-Here is a cleaner `README.md` you can paste directly into GitHub.
-
 ````markdown
 # DiffusiveCohesin
 
