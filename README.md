@@ -9,7 +9,7 @@ This repository contains the code used for the paper:
 This repository provides:
 
 - four LAMMPS input scripts corresponding to the four simulation videos in the paper
-- one LAMMPS data file for the initial configuration
+- one LAMMPS data file for the initial simulation configuration
 - custom LAMMPS source files required for the simulations
 
 The simulations were developed for **LAMMPS 22Jul2025** on **Linux**.
