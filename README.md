@@ -1,4 +1,3 @@
-````markdown
 # DiffusiveCohesin
 
 This repository contains the code used for the paper:
