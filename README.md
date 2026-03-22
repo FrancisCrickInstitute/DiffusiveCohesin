@@ -129,11 +129,3 @@ To reproduce the simulations:
 ## Contact
 
 For questions about the code or simulations, please contact the repository author.
-
-````
-
-A slightly more polished title line would also be:
-
-```markdown
-**"Symmetry and force response of cohesin loop extrusion are determined by diffusion of its motor and anchor domains"**
-````
