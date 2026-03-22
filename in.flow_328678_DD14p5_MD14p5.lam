@@ -1,0 +1,192 @@
+units lj
+atom_style angle
+boundary p p p
+
+# ---------- tags ----------
+variable runTag string flow_328678_DD14p5_MD14p5
+variable seed equal 328678
+
+# ---------- heads ----------
+variable idLeftHead  equal 1201
+variable idRightHead equal 1202
+
+# ---------- DNA index ----------
+variable dnaMin equal 1
+variable dnaMax equal 1200
+
+# ---------- dynamic window + nearest/dna ----------
+variable winHalf equal 10
+variable rSwitch equal 2.5
+variable rDetach equal 1.0e9   # always return nearest DNA ID (never 0)
+
+# ---------- MD-stage Morse D0 to sweep ----------
+variable MD_D0 equal 14.5
+
+# ---------- protocol lengths ----------
+variable nMM equal 12
+variable relaxMM equal 15000
+variable nMD equal 175
+variable relaxMD equal 30000
+variable nDDblocks equal 20
+variable relaxDD equal 60000
+variable nCycles equal 6
+
+# ---------- speed knobs (single core friendly) ----------
+neighbor 6.0 bin
+neigh_modify every 20 delay 0 check yes
+comm_modify cutoff 8.0
+
+pair_style hybrid/overlay lj/cut 1.122462048 morse/dynamic_window 0.9 ${winHalf} ${idRightHead} morse/dynamic_window 0.9 ${winHalf} ${idLeftHead}
+bond_style hybrid fene harmonic
+angle_style cosine
+special_bonds fene
+
+read_data F0.005_600_604.data extra/bond/types 1 extra/bond/per/atom 2 extra/special/per/atom 10
+reset_timestep 0
+
+# ---------- groups ----------
+group dna type 1
+group leftHead id ${idLeftHead}
+group rightHead id ${idRightHead}
+group heads union leftHead rightHead
+
+group leftEnd id 1
+group rightEnd id 1200
+group ends union leftEnd rightEnd
+group mobile subtract all ends
+
+# ---------- coefficients ----------
+bond_coeff 1 fene 30.0 1.6 1.0 1.0
+bond_coeff 2 fene 0.1 10.0 1.0 1.0
+bond_coeff 3 harmonic 5.0 0.35
+angle_coeff 1 7.35
+
+pair_coeff 1 1 lj/cut 1.0 1.0 1.122462048
+pair_coeff 1 2 lj/cut 0.5 0.1 0.1
+pair_coeff 1 3 lj/cut 0.5 0.1 0.1
+pair_coeff 2 2 lj/cut 1.0 1.0 1.122462048
+pair_coeff 3 3 lj/cut 1.0 1.0 1.122462048
+pair_coeff 2 3 lj/cut 1.0 1.0 1.122462048
+
+# Disable both Morse channels by default
+pair_coeff 1 3 morse/dynamic_window 1 0.0 0.0 0.0
+pair_coeff 1 2 morse/dynamic_window 2 0.0 0.0 0.0
+
+# ---------- dynamics ----------
+timestep 0.005
+fix 1 mobile nve
+fix 2 mobile langevin 1.0 1.0 1.0 ${seed}
+fix holdL leftEnd setforce 0.0 0.0 0.0
+fix holdR rightEnd setforce 0.0 0.0 0.0
+fix flow mobile addforce 0.0 0.0 0.005
+
+# ---------- NEW compute: nearest DNA bead ID + dist ----------
+compute nearL leftHead  nearest/dna dna ${winHalf} ${rSwitch} ${rDetach}
+compute nearR rightHead nearest/dna dna ${winHalf} ${rSwitch} ${rDetach}
+compute nearL_ID   leftHead  reduce sum c_nearL[1]
+compute nearR_ID   rightHead reduce sum c_nearR[1]
+compute nearL_dist leftHead  reduce sum c_nearL[2]
+compute nearR_dist rightHead reduce sum c_nearR[2]
+
+thermo 1000
+thermo_style custom step temp pe etotal c_nearL_ID c_nearR_ID c_nearL_dist c_nearR_dist
+thermo_modify norm no
+
+dump dAll all custom 2000 dump.${runTag}.all id type x y z
+dump_modify dAll sort id
+
+
+# ---------- initial indices ----------
+variable leftStart0  equal 650
+variable rightStart0 equal 654
+
+variable leftBaseIdx   equal ${leftStart0}
+variable rightBaseIdx  equal ${rightStart0}
+
+# ============================================================
+# Phase 1 (M-M)
+# ============================================================
+print "=== Phase 1 (M-M) ==="
+
+variable stepMM loop ${nMM}
+label loop_phase1_MM
+
+variable idxL equal v_leftStart0 - v_stepMM
+variable idxR equal v_rightStart0 + v_stepMM
+if "${idxL} < ${dnaMin}" then "jump SELF done"
+if "${idxR} > ${dnaMax}" then "jump SELF done"
+
+delete_bonds leftHead  bond 3 any remove special
+delete_bonds rightHead bond 3 any remove special
+create_bonds single/bond 3 ${idLeftHead}  ${idxL}
+create_bonds single/bond 3 ${idRightHead} ${idxR}
+
+run ${relaxMM}
+
+next stepMM
+jump SELF loop_phase1_MM
+
+# Snapshot after Phase 1
+run 0
+variable leftBaseIdx  equal c_nearL_ID
+variable rightBaseIdx equal c_nearR_ID
+print "=== After Phase1: leftBaseIdx=${leftBaseIdx} rightBaseIdx=${rightBaseIdx} ==="
+
+# ============================================================
+# Cycles: Phase 2 (M-D) then Phase 3 (D-D)
+# ============================================================
+variable cyc loop ${nCycles}
+label loop_cycle
+
+print "=== Cycle ${cyc}/${nCycles} start: leftBaseIdx=${leftBaseIdx} rightBaseIdx=${rightBaseIdx} ==="
+
+# ---------------- Phase 2 (M-D) ----------------
+# MD stage: set (1 3) channel to MD_D0, keep (1 2) off
+pair_coeff 1 2 morse/dynamic_window 2 0.0 0.0 0.0
+pair_coeff 1 3 morse/dynamic_window 1 ${MD_D0} 4.5 0.3
+
+delete_bonds rightHead bond 3 any remove special
+variable mdStartIdx equal ${leftBaseIdx}
+
+variable stepMD loop ${nMD}
+label loop_phase2_MD
+
+variable idxL2 equal v_mdStartIdx - v_stepMD
+if "${idxL2} < ${dnaMin}" then "jump SELF done"
+
+delete_bonds leftHead bond 3 any remove special
+create_bonds single/bond 3 ${idLeftHead} ${idxL2}
+delete_bonds rightHead bond 3 any remove special
+
+run ${relaxMD}
+
+next stepMD
+jump SELF loop_phase2_MD
+
+# ---------------- Phase 3 (D-D) ----------------
+# DD stage fixed at 20 (keep your DD_20 logic)
+pair_coeff 1 2 morse/dynamic_window 2 14.5 4.5 0.3
+pair_coeff 1 3 morse/dynamic_window 1 ${MD_D0} 4.5 0.3
+
+delete_bonds leftHead  bond 3 any remove special
+delete_bonds rightHead bond 3 any remove special
+
+variable blk loop ${nDDblocks}
+label loop_phase3_DD
+run ${relaxDD}
+next blk
+jump SELF loop_phase3_DD
+
+# Snapshot for next cycle (critical D->M handoff)
+run 0
+variable leftBaseIdx  equal c_nearL_ID
+variable rightBaseIdx equal c_nearR_ID
+print "=== After Cycle ${cyc}: leftBaseIdx=${leftBaseIdx} rightBaseIdx=${rightBaseIdx} ==="
+
+next cyc
+jump SELF loop_cycle
+
+label done
+print "DONE runTag=${runTag}"
+undump dAll
+undump dH
