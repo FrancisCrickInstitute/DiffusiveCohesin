@@ -26,7 +26,7 @@ Main files in this repository include:
 - `in.flow_328701_DD14p5_MD14p5.lam` - Video S5
 - `in.flow_328708_DD14p5_MD14p5.lam` - Video S4
 - `in.flow_329079_DD14p5_MD24p5.lam` - Video S3
-  LAMMPS input scripts used for the simulations.
+
 
 - `compute_nearest_dna.cpp`
 - `compute_nearest_dna.h`  
