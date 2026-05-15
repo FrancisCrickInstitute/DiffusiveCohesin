@@ -13,7 +13,7 @@ This repository provides:
 - custom LAMMPS source files required for the simulations
 - two helper scripts for macOS and Linux setup, compilation, and simulation runs
 
-The simulations were developed for **LAMMPS 22Jul2025** on **Linux**. The custom source files in this repository must be compiled into LAMMPS before the input scripts can be run.The simulations and analysis were run on a local workstation equipped with an Intel Core i9-14900K CPU (24 cores, 32 threads), 128 GB DDR5 RAM, and a 960 GB SSD, running Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-216-generic, x86_64).We also tested in Fedora41，12 × 13th Gen Intel® Core™ i7-1365U.For MacOS，the same seed may not duplicate the exact restults.
+The simulations were developed for **LAMMPS 22Jul2025** on **Linux**. The custom source files in this repository must be compiled into LAMMPS before the input scripts can be run.The simulations and analysis were run on a local workstation equipped with an Intel Core i9-14900K CPU (24 cores, 32 threads), 128 GB DDR5 RAM, and a 960 GB SSD, running Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-216-generic, x86_64).We also tested in Fedora41，12 × 13th Gen Intel® Core™ i7-1365U,that can duplicate the same restults.For MacOS，the same seed may not duplicate the exact restults
 
 ## Repository contents
 
@@ -54,34 +54,6 @@ The helper scripts download the LAMMPS `stable_22Jul2025` source code, copy the 
 
 The build step may use up to 8 CPU cores to speed up compilation. Each simulation itself uses a serial LAMMPS executable and runs on one CPU core.
 
-## Installation on macOS
-
-Download this repository, then run:
-
-```bash
-git clone https://github.com/FrancisCrickInstitute/DiffusiveCohesin.git
-cd DiffusiveCohesin
-chmod +x run_macos.sh
-bash run_macos.sh first
-```
-
-This builds LAMMPS and runs the first full simulation:
-
-```bash
-in.flow_328678_DD14p5_MD14p5.lam
-```
-
-To run all four simulations at the same time on macOS:
-
-```bash
-bash run_macos.sh all4
-```
-
-To force a clean LAMMPS re-download and rebuild:
-
-```bash
-CLEAN=1 bash run_macos.sh first
-```
 
 ## Installation on Linux
 
@@ -110,6 +82,35 @@ To force a clean LAMMPS re-download and rebuild:
 
 ```bash
 CLEAN=1 bash run_linux.sh first
+```
+
+## Installation on macOS
+
+Download this repository, then run:
+
+```bash
+git clone https://github.com/FrancisCrickInstitute/DiffusiveCohesin.git
+cd DiffusiveCohesin
+chmod +x run_macos.sh
+bash run_macos.sh first
+```
+
+This builds LAMMPS and runs the first full simulation:
+
+```bash
+in.flow_328678_DD14p5_MD14p5.lam
+```
+
+To run all four simulations at the same time on macOS:
+
+```bash
+bash run_macos.sh all4
+```
+
+To force a clean LAMMPS re-download and rebuild:
+
+```bash
+CLEAN=1 bash run_macos.sh first
 ```
 
 The macOS and Linux Installation procedures perform the same steps:
