@@ -54,7 +54,7 @@ The helper scripts download the LAMMPS `stable_22Jul2025` source code, copy the 
 
 The build step may use up to 8 CPU cores to speed up compilation. Each simulation itself uses a serial LAMMPS executable and runs on one CPU core.
 
-## Quick start on macOS
+## Installation on macOS
 
 Download this repository, then run:
 
@@ -83,7 +83,7 @@ To force a clean LAMMPS re-download and rebuild:
 CLEAN=1 bash run_macos.sh first
 ```
 
-## Quick start on Linux
+## Installation on Linux
 
 Download this repository, then run:
 
@@ -112,9 +112,7 @@ To force a clean LAMMPS re-download and rebuild:
 CLEAN=1 bash run_linux.sh first
 ```
 
-## What the helper scripts do
-
-The macOS and Linux helper scripts perform the same main steps:
+The macOS and Linux Installation procedures perform the same steps:
 
 1. check or install basic build tools
 2. download LAMMPS `stable_22Jul2025`
