@@ -22,10 +22,10 @@ Main files in this repository include:
 - `F0.005_600_604.data`  
   Initial system configuration.
 
-- `in.flow_328678_DD14p5_MD14p5.lam`
-- `in.flow_328701_DD14p5_MD14p5.lam`
-- `in.flow_328708_DD14p5_MD14p5.lam`
-- `in.flow_329079_DD14p5_MD24p5.lam`  
+- `in.flow_328678_DD14p5_MD14p5.lam` - Video S6
+- `in.flow_328701_DD14p5_MD14p5.lam` - Video S5
+- `in.flow_328708_DD14p5_MD14p5.lam` - Video S4
+- `in.flow_329079_DD14p5_MD24p5.lam` - Video S3
   LAMMPS input scripts used for the simulations.
 
 - `compute_nearest_dna.cpp`
@@ -212,7 +212,7 @@ variable seed equal 328678
 
 ## Reproducibility note
 
-Using the same random seed is expected to reproduce the same trajectory only when using the same LAMMPS version, the same executable, the same compiler and compiler flags, the same operating system.
+Using the same random seed is expected to reproduce the same trajectory only when using the same LAMMPS version, the same executable, the same compiler and compiler flags, the same operating system, the same CPU, and the same number of MPI processes.
 
 Across different operating systems, CPUs, compilers, or compiler versions, the same seed should be interpreted as reproducing the same simulation protocol, not necessarily the exact same bead-by-bead trajectory.
 
