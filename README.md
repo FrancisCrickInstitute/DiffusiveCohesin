@@ -13,7 +13,7 @@ This repository provides:
 - custom LAMMPS source files required for the simulations
 - two helper scripts for macOS and Linux setup, compilation, and simulation runs
 
-The simulations were developed for **LAMMPS 22Jul2025** on **Linux**. The custom source files in this repository must be compiled into LAMMPS before the input scripts can be run.
+The simulations were developed for **LAMMPS 22Jul2025** on **Linux**. The custom source files in this repository must be compiled into LAMMPS before the input scripts can be run.The simulations and analysis were run on a local workstation equipped with an Intel Core i9-14900K CPU (24 cores, 32 threads), 128 GB DDR5 RAM, and a 960 GB SSD, running Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-216-generic, x86_64).We also tested in Fedora41，12 × 13th Gen Intel® Core™ i7-1365U.For MacOS，the same seed will not duplicate the exact restults.
 
 ## Repository contents
 
@@ -44,7 +44,7 @@ Main files in this repository include:
 
 ## Requirements
 
-- macOS or Linux
+-  Linux or MacOS
 - `git`
 - `cmake`
 - C++ compiler
@@ -196,7 +196,7 @@ To remove the external flow, remove or comment out this line in the relevant inp
 fix flow mobile addforce 0.0 0.0 0.005
 ```
 
-To change the diffusion coefficient of the motor domain, edit:
+To change the diffusion coefficient of the motor unit, edit:
 
 ```lammps
 variable MD_D0 equal 14.5
