@@ -13,7 +13,7 @@ This repository provides:
 - custom LAMMPS source files required for the simulations
 - two helper scripts for macOS and Linux setup, compilation, and simulation runs
 
-The simulations were developed for **LAMMPS 22Jul2025** on **Linux**. The custom source files in this repository must be compiled into LAMMPS before the input scripts can be run.The simulations and analysis were run on a local workstation equipped with an Intel Core i9-14900K CPU (24 cores, 32 threads), 128 GB DDR5 RAM, and a 960 GB SSD, running Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-216-generic, x86_64).We also tested in Fedora41，12 × 13th Gen Intel® Core™ i7-1365U,that can duplicate the same restults.For MacOS，the same seed may not duplicate the exact restults
+The simulations were developed for **LAMMPS 22Jul2025** on **Linux**. The custom source files in this repository must be compiled into LAMMPS before the input scripts can be run.The simulations and analysis were run on a local workstation equipped with an Intel Core i9-14900K CPU (24 cores, 32 threads), 128 GB DDR5 RAM, and a 960 GB SSD, running Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-216-generic, x86_64).We also tested in Fedora41，12 × 13th Gen Intel® Core™ i7-1365U,that can duplicate the same restults.For MacOS，the same seed may not duplicate the exact restults.
 
 ## Repository contents
 
