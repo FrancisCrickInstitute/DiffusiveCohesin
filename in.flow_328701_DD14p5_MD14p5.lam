@@ -2,6 +2,9 @@ units lj
 atom_style angle
 boundary p p p
 
+# ---------- Video Correspondence ----------
+# This LAM file corresponds to: Video S5
+
 # ---------- tags ----------
 variable runTag string flow_328701_DD14p5_MD14p5
 variable seed equal 328701
